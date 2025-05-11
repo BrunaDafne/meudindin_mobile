@@ -3,14 +3,25 @@ import { View, Text, ScrollView, TouchableOpacity, Image, Button } from 'react-n
 import { styles } from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+
+type DrawerParamList = {
+  Dashboard: undefined;
+  Orçamento: undefined;
+  Contas: undefined;
+};
 
 export default function Dashboard() {
   const { logout } = useAuth();
+  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Image source={require('../../assets/logo.png')} style={styles.logo} />
+      <TouchableOpacity onPress={() => navigation.openDrawer()}>
+      <Image source={require('../../assets/logo.png')} style={styles.logo} />
+      </TouchableOpacity>
         <Text style={styles.headerTitle}>Dashboard</Text>
       </View>
 
