@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Button } from 'react-native';
-import { styles } from './styles';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Button,
+} from 'react-native';
+import {styles} from './styles';
 import Icon from 'react-native-vector-icons/Feather';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import {useAuth} from '../../contexts/AuthContext';
+import {useNavigation} from '@react-navigation/native';
+import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 type DrawerParamList = {
   Dashboard: undefined;
@@ -13,15 +20,18 @@ type DrawerParamList = {
 };
 
 export default function Dashboard() {
-  const { logout } = useAuth();
-  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
-  
+  const {logout} = useAuth();
+  const navigation = useNavigation();
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.openDrawer()}>
-      <Image source={require('../../assets/logo.png')} style={styles.logo} />
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.logo}
+          />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Dashboard</Text>
       </View>
 
@@ -33,7 +43,11 @@ export default function Dashboard() {
         <View style={[styles.card, styles.incomeCard]}>
           <Text style={styles.cardTitle}>Receita mensal</Text>
           <Text style={styles.cardValue}>R$ 5773</Text>
-          <TouchableOpacity style={[styles.cardButtonReceita]}>
+          <TouchableOpacity
+            style={[styles.cardButtonReceita]}
+            onPress={() =>
+              navigation.navigate('CreateTransaction', {transactionType: 1})
+            }>
             <Text style={styles.cardButtonTextReceita}>Adicionar</Text>
           </TouchableOpacity>
         </View>
@@ -41,7 +55,11 @@ export default function Dashboard() {
         <View style={[styles.card, styles.expenseCardColor]}>
           <Text style={styles.cardTitle}>Despesa mensal</Text>
           <Text style={styles.cardValue}>R$ 573</Text>
-          <TouchableOpacity style={styles.cardButton}>
+          <TouchableOpacity
+            style={styles.cardButton}
+            onPress={() =>
+              navigation.navigate('CreateTransaction', {transactionType: 0})
+            }>
             <Text style={styles.cardButtonText}>Adicionar</Text>
           </TouchableOpacity>
         </View>
@@ -65,12 +83,18 @@ export default function Dashboard() {
           <Text style={styles.expenseAmount}>R$ 350,00</Text>
         </View>
 
-        <Icon name="chevron-down" size={24} color="#000" style={styles.dropdownIcon} />
+        <Icon
+          name="chevron-down"
+          size={24}
+          color="#000"
+          style={styles.dropdownIcon}
+        />
       </View>
 
       <View style={styles.graphCard}>
         <Text style={styles.graphText}>
-          GRÁFICO DE COLUNAS COM TOP 3 - 5 CATEGORIAS MAIS GASTAS COM PORCENTAGEM
+          GRÁFICO DE COLUNAS COM TOP 3 - 5 CATEGORIAS MAIS GASTAS COM
+          PORCENTAGEM
         </Text>
       </View>
 
@@ -86,7 +110,10 @@ export default function Dashboard() {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.balanceScroll}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.balanceScroll}>
         <View style={styles.balanceCard}>
           <Text style={styles.balanceTitle}>Conta bradesco</Text>
           <Text style={styles.balanceValue}>R$ 2430,50</Text>
