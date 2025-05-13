@@ -6,6 +6,9 @@ import {TypeTransation} from '../../constants/transation';
 import SelectDropdown from 'react-native-select-dropdown';
 import {styles} from './styles';
 import DropdownField from '../../components/DropdownField';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { Transaction } from '../../redux/slices/transactionsSlice';
 
 interface RouteParams {
   transactionType: TypeTransation;
@@ -16,56 +19,60 @@ const categoriasReceita = ['Salário', 'Outros'];
 const categoriasDespesa = ['Alimentação', 'Saúde', 'Lazer'];
 
 export const CreateTransaction = () => {
+  const {id, receita} = useSelector((state: RootState) => state.user);
+  console.log('id, receita: ', id, receita)
+  const transactions = useSelector((state: RootState) => state.transaction.transactions);
+  console.log('transactions: ', transactions);
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
   const route = useRoute();
   const {transactionType} = route.params as RouteParams;
 
   const [titulo, setTitulo] = useState('');
+  const [loading, setLoading] = useState(false);
   const [valor, setValor] = useState();
   console.log('valor: ', valor);
   const [data, setData] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [contaSelecionada, setContaSelecionada] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
+  console.log('categoria: ', categoriaSelecionada);
   const [messageError, setMessageError] = useState('');
 
   const handleSalvar = () => {
     try {
+      setLoading(true);
       if (
         contaSelecionada.length <= 0 ||
         !valor ||
-        contaSelecionada.length <= 0 ||
+        categoriaSelecionada.length <= 0 ||
         titulo.length <= 0
       ) {
         setMessageError('Preencha todos os dados');
         return;
       }
-      // const novaTransacao: Transaction = {
-      //   //id: transactions?.length > 0 ? transactions.length + 1 : 1,
-      //   id_user: id,
-      //   id_type: TypeTransactions.Despesa,
-      //   title: titulo,
-      //   value: valor,
-      //   date: data,
-      //   id_wallet: conta,
-      //   id_category: categoria,
-      //   created_date: new Date(),
-      // }
+      
+      const novaTransacao: Transaction = {
+        id: transactions?.length > 0 ? transactions.length + 1 : 1,
+        id_user: 1, //id do usuário
+        id_type: transactionType,
+        title: titulo,
+        value: valor,
+        date: data,
+        id_wallet: 1,
+        id_category: 1,
+        created_date: new Date(),
+      }
 
-      const transacao = {
-        titulo,
-        valor: valor,
-        data,
-        conta: contaSelecionada,
-        categoria: categoriaSelecionada,
-        tipo: transactionType,
-      };
       // Aqui você pode chamar a API ou salvar no contexto
-      console.log('Transação salva:', transacao);
+      console.log('Transação salva:', novaTransacao);
       //navigation.goBack();
+      setMessageError('');
     } catch {
-      setMessageError('Ocorreu um erro em criar a transação')
+      setMessageError('Ocorreu um erro em criar a transação');
     } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +82,7 @@ export const CreateTransaction = () => {
         Adicionar {transactionType === 0 ? 'despesa' : 'receita'}
       </Text>
 
-      <Text style={styles.title}>Título</Text>
+      <Text style={styles.label}>Título</Text>
       <TextInput
         placeholder="Título"
         value={titulo}
@@ -83,7 +90,7 @@ export const CreateTransaction = () => {
         style={styles.input}
       />
 
-      <Text style={styles.title}>Valor</Text>
+      <Text style={styles.label}>Valor</Text>
       <TextInput
         placeholder="Digite apenas números"
         value={valor}
@@ -92,7 +99,7 @@ export const CreateTransaction = () => {
         style={styles.input}
       />
 
-      <Text style={styles.title}>Data</Text>
+      <Text style={styles.label}>Data</Text>
       <TouchableOpacity
         onPress={() => setShowDatePicker(true)}
         style={styles.inputDate}>
@@ -112,15 +119,13 @@ export const CreateTransaction = () => {
         />
       )}
 
-      <Text style={styles.title}>Conta</Text>
       <DropdownField
-        label="Conta"
+        label="Conta"    
         data={contas}
         value={contaSelecionada}
         onSelect={setContaSelecionada}
       />
 
-      <Text style={styles.title}>Categoria</Text>
       <DropdownField
         label="Categoria"
         data={categoriasDespesa}

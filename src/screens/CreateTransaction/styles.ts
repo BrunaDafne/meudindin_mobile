@@ -14,12 +14,19 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  label: {
+    marginBottom: 4,
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: 10,
+  },
   input: {
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
     borderWidth: 1,
+    color: '#000',
     borderColor: '#ccc',
   },
   inputDate: {
