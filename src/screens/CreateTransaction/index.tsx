@@ -100,11 +100,22 @@ export const CreateTransaction = () => {
   //     created_at: new Date(),
   //   };
   //   console.log('user: ', user);
+  //   //dispatch(setUser(user));
   //   const contas = {
   //     receita: 5000,
   //     despesa: 0,
   //   }
   //   //dispatch(setValues(contas));
+
+  //   const novaCarteira: Wallet = {
+  //     id: wallets?.length > 0 ? wallets.length + 1 : 1,
+  //     id_user: id ? id : 1,
+  //     title: 'conta nubank',
+  //     value: 5000,
+  //     id_banking_institution: 2,
+  //     created_at: new Date(),
+  //   }
+  //   //dispatch(addWallet(novaCarteira))
   // }, []);
 
   return (
