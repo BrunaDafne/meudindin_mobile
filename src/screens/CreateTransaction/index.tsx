@@ -9,8 +9,11 @@ import DropdownField from '../../components/DropdownField';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import {categories} from '../../constants/categories';
-import {Transaction, addTransaction} from '../../redux/slices/transactionsSlice';
-import {Wallet, addWallet} from '../../redux/slices/walletSlice';
+import {
+  Transaction,
+  addTransaction,
+} from '../../redux/slices/transactionsSlice';
+import {Wallet, addWallet, updateWallet} from '../../redux/slices/walletSlice';
 import {UserState, setUser, setValues} from '../../redux/slices/userSlice';
 
 interface RouteParams {
@@ -20,7 +23,7 @@ interface RouteParams {
 const contas = ['Conta Nubank', 'Conta Bradesco'];
 
 export const CreateTransaction = () => {
-  const {id, receita} = useSelector((state: RootState) => state.user);
+  const {id, receita, despesa} = useSelector((state: RootState) => state.user);
   console.log('id, receita : ', id, receita);
   console.log('categories: ', categories);
   const transactions = useSelector(
@@ -41,7 +44,8 @@ export const CreateTransaction = () => {
   console.log('valor: ', valor);
   const [data, setData] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [contaSelecionada, setContaSelecionada] = useState('');
+  const [contaSelecionada, setContaSelecionada] = useState<Wallet>();
+  console.log('contaSelecionada: ', contaSelecionada);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState({
     id: 0,
     title: '',
@@ -53,7 +57,7 @@ export const CreateTransaction = () => {
     try {
       setLoading(true);
       if (
-        contaSelecionada.length <= 0 ||
+        !contaSelecionada ||
         !valor ||
         categoriaSelecionada.id <= 0 ||
         titulo.length <= 0
@@ -73,13 +77,36 @@ export const CreateTransaction = () => {
         id_category: categoriaSelecionada.id,
         created_date: new Date(),
       };
+      console.log('Transação salva:', novaTransacao);
 
       // Adicionar transação
       // dispatch(addTransaction(novaTransacao));
 
+      const carteira = wallets.find(({id}) => id === contaSelecionada.id);
+      console.log('carteira: ', carteira);
 
-      //const carteira = wallets.find(({id}) => id === 1);
-      console.log('Transação salva:', novaTransacao);
+      if (!carteira) {
+        return;
+      }
+
+      const value = carteira.value
+        ? transactionType === TypeTransation.Receita
+          ? carteira.value + valor
+          : carteira.value - valor
+        : valor;
+
+      console.log('value: ', value);
+      //dispatch(updateWallet({id: carteira?.id, value}))
+
+      const valoresAtualizar = {
+        [transactionType === TypeTransation.Receita ? 'receita' : 'despesa']:
+          transactionType === TypeTransation.Receita
+            ? receita + valor
+            : despesa + valor,
+      };
+      console.log('valoresAtualizar: ', valoresAtualizar);
+      //dispatch(setValues(valoresAtualizar));
+
       //navigation.goBack();
       setMessageError('');
     } catch {
