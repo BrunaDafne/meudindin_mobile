@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, TouchableOpacity, Platform} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -6,22 +6,28 @@ import {TypeTransation} from '../../constants/transation';
 import SelectDropdown from 'react-native-select-dropdown';
 import {styles} from './styles';
 import DropdownField from '../../components/DropdownField';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { Transaction } from '../../redux/slices/transactionsSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
+import {categories} from '../../constants/categories';
+import {Transaction, addTransaction} from '../../redux/slices/transactionsSlice';
+import {Wallet, addWallet} from '../../redux/slices/walletSlice';
+import {UserState, setUser, setValues} from '../../redux/slices/userSlice';
 
 interface RouteParams {
   transactionType: TypeTransation;
 }
 
 const contas = ['Conta Nubank', 'Conta Bradesco'];
-const categoriasReceita = ['Salário', 'Outros'];
-const categoriasDespesa = ['Alimentação', 'Saúde', 'Lazer'];
 
 export const CreateTransaction = () => {
   const {id, receita} = useSelector((state: RootState) => state.user);
-  console.log('id, receita: ', id, receita)
-  const transactions = useSelector((state: RootState) => state.transaction.transactions);
+  console.log('id, receita : ', id, receita);
+  console.log('categories: ', categories);
+  const transactions = useSelector(
+    (state: RootState) => state.transaction.transactions,
+  );
+  const wallets = useSelector((state: RootState) => state.wallets.wallets);
+  console.log('wallets: ', wallets);
   console.log('transactions: ', transactions);
   const dispatch = useDispatch();
 
@@ -36,8 +42,11 @@ export const CreateTransaction = () => {
   const [data, setData] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [contaSelecionada, setContaSelecionada] = useState('');
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
-  console.log('categoria: ', categoriaSelecionada);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState({
+    id: 0,
+    title: '',
+  });
+  console.log('categoria selecionada: ', categoriaSelecionada);
   const [messageError, setMessageError] = useState('');
 
   const handleSalvar = () => {
@@ -46,13 +55,13 @@ export const CreateTransaction = () => {
       if (
         contaSelecionada.length <= 0 ||
         !valor ||
-        categoriaSelecionada.length <= 0 ||
+        categoriaSelecionada.id <= 0 ||
         titulo.length <= 0
       ) {
         setMessageError('Preencha todos os dados');
         return;
       }
-      
+
       const novaTransacao: Transaction = {
         id: transactions?.length > 0 ? transactions.length + 1 : 1,
         id_user: 1, //id do usuário
@@ -61,11 +70,15 @@ export const CreateTransaction = () => {
         value: valor,
         date: data,
         id_wallet: 1,
-        id_category: 1,
+        id_category: categoriaSelecionada.id,
         created_date: new Date(),
-      }
+      };
 
-      // Aqui você pode chamar a API ou salvar no contexto
+      // Adicionar transação
+      // dispatch(addTransaction(novaTransacao));
+
+
+      //const carteira = wallets.find(({id}) => id === 1);
       console.log('Transação salva:', novaTransacao);
       //navigation.goBack();
       setMessageError('');
@@ -75,6 +88,24 @@ export const CreateTransaction = () => {
       setLoading(false);
     }
   };
+
+  // useEffect(() => {
+  //   const user: UserState = {
+  //     id: 1,
+  //     name: 'Bruna Dafne',
+  //     email: 'brunadafne467@gmail.com',
+  //     password: '1234',
+  //     receita: 5000,
+  //     despesa: 0,
+  //     created_at: new Date(),
+  //   };
+  //   console.log('user: ', user);
+  //   const contas = {
+  //     receita: 5000,
+  //     despesa: 0,
+  //   }
+  //   //dispatch(setValues(contas));
+  // }, []);
 
   return (
     <View style={styles.container}>
@@ -120,15 +151,15 @@ export const CreateTransaction = () => {
       )}
 
       <DropdownField
-        label="Conta"    
-        data={contas}
+        label="Conta"
+        data={wallets}
         value={contaSelecionada}
         onSelect={setContaSelecionada}
       />
 
       <DropdownField
         label="Categoria"
-        data={categoriasDespesa}
+        data={categories}
         value={categoriaSelecionada}
         onSelect={setCategoriaSelecionada}
       />
