@@ -66,6 +66,11 @@ export const CreateTransaction = () => {
         return;
       }
 
+      if (!id) {
+        setMessageError('Não foi possível inserir dados nesse usuário');
+        return;
+      }
+
       const novaTransacao: Transaction = {
         id: transactions?.length > 0 ? transactions.length + 1 : 1,
         id_user: 1, //id do usuário
@@ -77,13 +82,11 @@ export const CreateTransaction = () => {
         id_category: categoriaSelecionada.id,
         created_date: new Date(),
       };
-      console.log('Transação salva:', novaTransacao);
 
       // Adicionar transação
-      // dispatch(addTransaction(novaTransacao));
+      dispatch(addTransaction(novaTransacao));
 
       const carteira = wallets.find(({id}) => id === contaSelecionada.id);
-      console.log('carteira: ', carteira);
 
       if (!carteira) {
         return;
@@ -95,8 +98,7 @@ export const CreateTransaction = () => {
           : carteira.value - valor
         : valor;
 
-      console.log('value: ', value);
-      //dispatch(updateWallet({id: carteira?.id, value}))
+      dispatch(updateWallet({id: carteira?.id, value}))
 
       const valoresAtualizar = {
         [transactionType === TypeTransation.Receita ? 'receita' : 'despesa']:
@@ -104,11 +106,18 @@ export const CreateTransaction = () => {
             ? receita + valor
             : despesa + valor,
       };
-      console.log('valoresAtualizar: ', valoresAtualizar);
-      //dispatch(setValues(valoresAtualizar));
+      dispatch(setValues(valoresAtualizar));
 
-      //navigation.goBack();
+      setTitulo('');
+      setValor(undefined);
+      setData(new Date());
+      setContaSelecionada(undefined);
+      setCategoriaSelecionada({
+        id: 0,
+        title: '',
+      });
       setMessageError('');
+      navigation.goBack();
     } catch {
       setMessageError('Ocorreu um erro em criar a transação');
     } finally {
@@ -162,7 +171,7 @@ export const CreateTransaction = () => {
       <Text style={styles.label}>Valor</Text>
       <TextInput
         placeholder="Digite apenas números"
-        value={valor}
+        value={valor ? valor : undefined}
         onChangeText={value => setValor(Number(value))}
         keyboardType="numeric"
         style={styles.input}
