@@ -11,7 +11,8 @@ import {styles} from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {useAuth} from '../../contexts/AuthContext';
 import {useNavigation} from '@react-navigation/native';
-import {DrawerNavigationProp} from '@react-navigation/drawer';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
 
 type DrawerParamList = {
   Dashboard: undefined;
@@ -21,6 +22,8 @@ type DrawerParamList = {
 
 export default function Dashboard() {
   const {logout} = useAuth();
+  const {receita, despesa} = useSelector((state: RootState) => state.user);
+  const wallets = useSelector((state: RootState) => state.wallets.wallets);
   const navigation = useNavigation();
 
   return (
@@ -42,7 +45,7 @@ export default function Dashboard() {
       <View style={styles.cardsContainer}>
         <View style={[styles.card, styles.incomeCard]}>
           <Text style={styles.cardTitle}>Receita mensal</Text>
-          <Text style={styles.cardValue}>R$ 5773</Text>
+          <Text style={styles.cardValue}>R$ {receita}</Text>
           <TouchableOpacity
             style={[styles.cardButtonReceita]}
             onPress={() =>
@@ -54,7 +57,7 @@ export default function Dashboard() {
 
         <View style={[styles.card, styles.expenseCardColor]}>
           <Text style={styles.cardTitle}>Despesa mensal</Text>
-          <Text style={styles.cardValue}>R$ 573</Text>
+          <Text style={styles.cardValue}>R$ {despesa}</Text>
           <TouchableOpacity
             style={styles.cardButton}
             onPress={() =>
@@ -114,15 +117,14 @@ export default function Dashboard() {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceTitle}>Conta bradesco</Text>
-          <Text style={styles.balanceValue}>R$ 2430,50</Text>
-        </View>
-
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceTitle}>Conta nubank</Text>
-          <Text style={styles.balanceValue}>R$ 240,50</Text>
-        </View>
+        {wallets?.map(({title, value, id}) => {
+          return (
+            <View key={id} style={styles.balanceCard}>
+              <Text style={styles.balanceTitle}>{title}</Text>
+              <Text style={styles.balanceValue}>R$ {value}</Text>
+            </View>
+          );
+        })}
       </ScrollView>
 
       <Text style={styles.sectionTitle}>Orçamento</Text>

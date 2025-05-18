@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, Text, TextInput, TouchableOpacity, Platform} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {TypeTransation} from '../../constants/transation';
-import SelectDropdown from 'react-native-select-dropdown';
 import {styles} from './styles';
 import DropdownField from '../../components/DropdownField';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,26 +12,20 @@ import {
   Transaction,
   addTransaction,
 } from '../../redux/slices/transactionsSlice';
-import {Wallet, addWallet, updateWallet} from '../../redux/slices/walletSlice';
-import {UserState, setUser, setValues} from '../../redux/slices/userSlice';
+import {Wallet, updateWallet} from '../../redux/slices/walletSlice';
+import {setValues} from '../../redux/slices/userSlice';
 import Toast from 'react-native-toast-message';
 
 interface RouteParams {
   transactionType: TypeTransation;
 }
 
-const contas = ['Conta Nubank', 'Conta Bradesco'];
-
 export const CreateTransaction = () => {
   const {id, receita, despesa} = useSelector((state: RootState) => state.user);
-  console.log('id, receita : ', id, receita);
-  console.log('categories: ', categories);
   const transactions = useSelector(
     (state: RootState) => state.transaction.transactions,
   );
   const wallets = useSelector((state: RootState) => state.wallets.wallets);
-  console.log('wallets: ', wallets);
-  console.log('transactions: ', transactions);
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
@@ -42,16 +35,13 @@ export const CreateTransaction = () => {
   const [titulo, setTitulo] = useState('');
   const [loading, setLoading] = useState(false);
   const [valor, setValor] = useState();
-  console.log('valor: ', valor);
   const [data, setData] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [contaSelecionada, setContaSelecionada] = useState<Wallet>();
-  console.log('contaSelecionada: ', contaSelecionada);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState({
     id: 0,
     title: '',
   });
-  console.log('categoria selecionada: ', categoriaSelecionada);
   const [messageError, setMessageError] = useState('');
 
   const handleSalvar = () => {
@@ -74,12 +64,12 @@ export const CreateTransaction = () => {
 
       const novaTransacao: Transaction = {
         id: transactions?.length > 0 ? transactions.length + 1 : 1,
-        id_user: 1, //id do usuário
+        id_user: id,
         id_type: transactionType,
         title: titulo,
         value: valor,
         date: data,
-        id_wallet: 1,
+        id_wallet: contaSelecionada.id,
         id_category: categoriaSelecionada.id,
         created_date: new Date(),
       };
