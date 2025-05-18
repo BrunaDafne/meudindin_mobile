@@ -6,9 +6,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {AuthProvider} from './src/contexts/AuthContext';
 import AppRoutes from './src/navigation';
 import {Provider} from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react'
+import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './src/redux/store';
-import { ActivityIndicator } from 'react-native'
+import {ActivityIndicator} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <AuthProvider>
             <AppRoutes />
           </AuthProvider>
+          <Toast />
         </NavigationContainer>
       </PersistGate>
     </Provider>

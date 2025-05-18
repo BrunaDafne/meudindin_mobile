@@ -15,6 +15,7 @@ import {
 } from '../../redux/slices/transactionsSlice';
 import {Wallet, addWallet, updateWallet} from '../../redux/slices/walletSlice';
 import {UserState, setUser, setValues} from '../../redux/slices/userSlice';
+import Toast from 'react-native-toast-message';
 
 interface RouteParams {
   transactionType: TypeTransation;
@@ -117,6 +118,10 @@ export const CreateTransaction = () => {
         title: '',
       });
       setMessageError('');
+      Toast.show({
+        type: 'success',
+        text1: 'Transação salva com sucesso!',
+      });
       navigation.goBack();
     } catch {
       setMessageError('Ocorreu um erro em criar a transação');
