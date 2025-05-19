@@ -6,6 +6,7 @@ import Login from '../screens/Login';
 import Dashboard from '../screens/Dashboard';
 import Budget from '../screens/Budget';
 import {CreateTransaction} from '../screens/CreateTransaction';
+import TransactionScreen from '../screens/Transaction';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -23,6 +24,7 @@ function AuthenticatedDrawer() {
       }}>
       <Drawer.Screen name="Dashboard" component={Dashboard} />
       <Drawer.Screen name="Orçamento" component={Budget} />
+      <Drawer.Screen name="Transações" component={TransactionScreen} />
     </Drawer.Navigator>
   );
 }
