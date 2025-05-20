@@ -154,7 +154,6 @@ export const CreateTransaction = () => {
       <Text style={styles.title}>
         Adicionar {transactionType === 0 ? 'despesa' : 'receita'}
       </Text>
-
       <Text style={styles.label}>Título</Text>
       <TextInput
         placeholder="Título"
