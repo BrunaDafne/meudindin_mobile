@@ -80,6 +80,11 @@ const Budget = () => {
 
       <View style={styles.containerLine}>
         <Text style={styles.sectionTitle}>Orçamento</Text>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.navigate('CreateBudget')}>
+          <Text>t</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
           <Text>t</Text>
         </TouchableOpacity>

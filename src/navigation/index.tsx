@@ -7,6 +7,7 @@ import Dashboard from '../screens/Dashboard';
 import Budget from '../screens/Budget';
 import {CreateTransaction} from '../screens/CreateTransaction';
 import TransactionScreen from '../screens/Transaction';
+import { CreateBudget } from '../screens/CreateBudget';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -40,6 +41,10 @@ export default function AppRoutes() {
           <Stack.Screen
             name="CreateTransaction"
             component={CreateTransaction}
+          />
+          <Stack.Screen
+            name="CreateBudget"
+            component={CreateBudget}
           />
         </>
       ) : (
