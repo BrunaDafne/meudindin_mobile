@@ -58,6 +58,9 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#111827',
   },
+  balanceScroll: {
+    marginBottom: 16,
+  },
   budgetContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -67,8 +70,10 @@ export const styles = StyleSheet.create({
   budgetCard: {
     backgroundColor: '#E5F0FF',
     borderRadius: 12,
-    padding: 12,
-    width: '30%',
+    width: 160,
+    marginRight: 20,
+    padding: 15,
+    marginTop: 5,
     alignItems: 'center',
   },
   budgetTitle: {
@@ -76,6 +81,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1F2937',
     marginBottom: 4,
+    marginTop: 10,
   },
   budgetMeta: {
     fontSize: 12,

@@ -228,8 +228,10 @@ export const styles = StyleSheet.create({
   budgetCard: {
     backgroundColor: '#E5F0FF',
     borderRadius: 12,
-    padding: 12,
-    width: '30%',
+    width: 160,
+    marginRight: 20,
+    padding: 15,
+    marginTop: 20,
     alignItems: 'center',
   },
 
@@ -237,6 +239,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     color: '#1F2937',
+    marginTop: 10,
     marginBottom: 4,
   },
 

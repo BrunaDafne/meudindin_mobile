@@ -64,9 +64,9 @@ export default function Login() {
                   <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.registerText}>
+                {/* <Text style={styles.registerText}>
                   Não possui uma conta? <Text style={styles.link}>Cadastre-se</Text>
-                </Text>
+                </Text> */}
               </View>
             </ScrollView>
           </TouchableWithoutFeedback>

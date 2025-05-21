@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,9 +13,10 @@ import {useAuth} from '../../contexts/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
-import { Categories } from '../../constants/categories';
-import { TypeTransation } from '../../constants/transation';
-import { Budget } from '../../redux/slices/budgetSlice';
+import {Categories} from '../../constants/categories';
+import {TypeTransation} from '../../constants/transation';
+import {Budget} from '../../redux/slices/budgetSlice';
+import {PieChart} from 'react-native-gifted-charts';
 
 type DrawerParamList = {
   Dashboard: undefined;
@@ -33,26 +34,29 @@ export default function Dashboard() {
   const {receita, despesa} = useSelector((state: RootState) => state.user);
   const wallets = useSelector((state: RootState) => state.wallets.wallets);
   const budgets = useSelector((state: RootState) => state.budgets.budgets);
-  const transactions = useSelector((state: RootState) => state.transaction.transactions);
+  const transactions = useSelector(
+    (state: RootState) => state.transaction.transactions,
+  );
 
   const navigation = useNavigation();
   const [mostrarOrcamentos, setMostrarOrcamentos] = useState<OrcamentoCard[]>();
 
   useEffect(() => {
     const categorySums = transactions.reduce((acc, transaction) => {
-        if (transaction.id_type === TypeTransation.Despesa) {
-          acc[transaction.id_category] = (acc[transaction.id_category] || 0) + transaction.value;
-        }
-        return acc;
-      }, {} as Record<number, number>);
-    
+      if (transaction.id_type === TypeTransation.Despesa) {
+        acc[transaction.id_category] =
+          (acc[transaction.id_category] || 0) + transaction.value;
+      }
+      return acc;
+    }, {} as Record<number, number>);
+
     const orcamentosFormatados: OrcamentoCard[] = budgets.map(budget => ({
-        ...budget,
-        value: categorySums[budget.id_category] || 0, // Adiciona 0 caso não tenha transações
-        name_category: Categories[budget.id_category],
+      ...budget,
+      value: categorySums[budget.id_category] || 0, // Adiciona 0 caso não tenha transações
+      name_category: Categories[budget.id_category],
     }));
-    setMostrarOrcamentos(orcamentosFormatados?.slice(0, 6))
-}, [budgets, transactions]);
+    setMostrarOrcamentos(orcamentosFormatados);
+  }, [budgets, transactions]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -160,15 +164,20 @@ export default function Dashboard() {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        <View style={styles.budgetContainer}>
-          {mostrarOrcamentos?.map((orcamento, index) => (
-            <View key={index} style={styles.budgetCard}>
-              <Text style={styles.budgetTitle}>{orcamento.name_category}</Text>
-              <Text style={styles.budgetMeta}>Meta: R$ {orcamento.limit}</Text>
-              <Text style={styles.budgetSpent}>Gasto: R$ {orcamento.value}</Text>
-            </View>
-          ))}
-        </View>
+        {mostrarOrcamentos?.map((orcamento, index) => (
+          <View key={index} style={styles.budgetCard}>
+            <PieChart
+              data={[
+                {value: orcamento.value, color: '#25A969', text: 'Alimentação'},
+                {value: orcamento.limit, color: '#fff', text: 'Transporte'},
+              ]}
+              radius={55}
+            />
+            <Text style={styles.budgetTitle}>{orcamento.name_category}</Text>
+            <Text style={styles.budgetMeta}>Meta: R$ {orcamento.limit}</Text>
+            <Text style={styles.budgetSpent}>Gasto: R$ {orcamento.value}</Text>
+          </View>
+        ))}
       </ScrollView>
     </ScrollView>
   );

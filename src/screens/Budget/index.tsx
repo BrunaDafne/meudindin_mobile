@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,11 +13,21 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import {styles} from './styles';
+import {OrcamentoCard} from '../Dashboard';
+import {TypeTransation} from '../../constants/transation';
+import {Categories} from '../../constants/categories';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
 
 const Budget = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
+  const [mostrarOrcamentos, setMostrarOrcamentos] = useState<OrcamentoCard[]>();
   const navigation = useNavigation();
+  const transactions = useSelector(
+    (state: RootState) => state.transaction.transactions,
+  );
+  const budgets = useSelector((state: RootState) => state.budgets.budgets);
 
   // Dados fictícios para os gráficos
   const pieData = [
@@ -41,6 +51,23 @@ const Budget = () => {
   const formatDate = date => {
     return date.toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
   };
+
+  useEffect(() => {
+    const categorySums = transactions.reduce((acc, transaction) => {
+      if (transaction.id_type === TypeTransation.Despesa) {
+        acc[transaction.id_category] =
+          (acc[transaction.id_category] || 0) + transaction.value;
+      }
+      return acc;
+    }, {} as Record<number, number>);
+
+    const orcamentosFormatados: OrcamentoCard[] = budgets.map(budget => ({
+      ...budget,
+      value: categorySums[budget.id_category] || 0, // Adiciona 0 caso não tenha transações
+      name_category: Categories[budget.id_category],
+    }));
+    setMostrarOrcamentos(orcamentosFormatados);
+  }, [budgets, transactions]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -90,15 +117,25 @@ const Budget = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.budgetContainer}>
-        {['Educação', 'Lazer', 'Educação', 'Compras'].map((label, index) => (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.balanceScroll}>
+        {mostrarOrcamentos?.map((orcamento, index) => (
           <View key={index} style={styles.budgetCard}>
-            <Text style={styles.budgetTitle}>{label}</Text>
-            <Text style={styles.budgetMeta}>Meta: R$ 350,00</Text>
-            <Text style={styles.budgetSpent}>Gasto: R$ 350,00</Text>
+            <PieChart
+              data={[
+                {value: orcamento.value, color: '#25A969', text: 'Alimentação'},
+                {value: orcamento.limit, color: '#fff', text: 'Transporte'},
+              ]}
+              radius={55}
+            />
+            <Text style={styles.budgetTitle}>{orcamento.name_category}</Text>
+            <Text style={styles.budgetMeta}>Meta: R$ {orcamento.limit}</Text>
+            <Text style={styles.budgetSpent}>Gasto: R$ {orcamento.value}</Text>
           </View>
         ))}
-      </View>
+      </ScrollView>
     </ScrollView>
   );
 };
