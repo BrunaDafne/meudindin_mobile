@@ -1,53 +1,50 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Platform} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {TypeTransation} from '../../constants/transation';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {styles} from './styles';
 import DropdownField from '../../components/DropdownField';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import {categories} from '../../constants/categories';
-import {
-  Transaction,
-  addTransaction,
-} from '../../redux/slices/transactionsSlice';
-import {Wallet} from '../../redux/slices/walletSlice';
 import Toast from 'react-native-toast-message';
-
-interface RouteParams {
-  transactionType: TypeTransation;
-}
+import { Budget, addBudget } from '../../redux/slices/budgetSlice';
 
 export const CreateBudget = () => {
   const {id} = useSelector((state: RootState) => state.user);
-  const transactions = useSelector(
-    (state: RootState) => state.transaction.transactions,
-  );
-  const wallets = useSelector((state: RootState) => state.wallets.wallets);
+  const budgets = useSelector((state: RootState) => state.budgets.budgets);
+  const [selectCategorias, setSelectCategorias] = useState<{ id: number; name: string; }[]>();
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
 
-  const [titulo, setTitulo] = useState('');
   const [loading, setLoading] = useState(false);
   const [valor, setValor] = useState();
-  const [data, setData] = useState(new Date());
-  const [contaSelecionada, setContaSelecionada] = useState<Wallet>();
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState({
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<{
+    id: number,
+    title: string,
+  } | undefined>({
     id: 0,
     title: '',
   });
   const [messageError, setMessageError] = useState('');
 
+  useEffect(() => {
+    const idsCadastrados = budgets.map(({id_category}) => {return id_category});
+
+    const filtrados = categories.filter(({id}) => {
+      if (!idsCadastrados.includes(id)) {
+        return true;
+      }
+    });
+
+    setSelectCategorias(filtrados);
+  }, []);
+
   const handleSalvar = () => {
     try {
       setLoading(true);
-      if (
-        !contaSelecionada ||
-        !valor ||
-        categoriaSelecionada.id <= 0 ||
-        titulo.length <= 0
-      ) {
+
+      if (!valor || !categoriaSelecionada || categoriaSelecionada.id <= 0) {
         setMessageError('Preencha todos os dados');
         return;
       }
@@ -57,57 +54,28 @@ export const CreateBudget = () => {
         return;
       }
 
-      const novaTransacao: Transaction = {
-        id: transactions?.length > 0 ? transactions.length + 1 : 1,
+      const novoOrçamento: Budget = {
+        id: budgets?.length > 0 ? budgets.length + 1 : 1,
         id_user: id,
-        //id_type: transactionType,
-        title: titulo,
-        value: valor,
-        date: data,
-        id_wallet: contaSelecionada.id,
+        limit: valor,
         id_category: categoriaSelecionada.id,
         created_date: new Date(),
-      };
-
-      // Adicionar transação
-      dispatch(addTransaction(novaTransacao));
-
-      const carteira = wallets.find(({id}) => id === contaSelecionada.id);
-
-      if (!carteira) {
-        return;
       }
 
-      // const value = carteira.value
-      //   ? transactionType === TypeTransation.Receita
-      //     ? carteira.value + valor
-      //     : carteira.value - valor
-      //   : valor;
+      dispatch(addBudget(novoOrçamento))
 
-      // dispatch(updateWallet({id: carteira?.id, value}))
+      // Limpar o select
+      const categorias = selectCategorias?.filter(({id}) => id !== categoriaSelecionada.id);
+      setSelectCategorias(categorias);
 
-      // const valoresAtualizar = {
-      //   [transactionType === TypeTransation.Receita ? 'receita' : 'despesa']:
-      //     transactionType === TypeTransation.Receita
-      //       ? receita + valor
-      //       : despesa + valor,
-      // };
-      // dispatch(setValues(valoresAtualizar));
-
-      setTitulo('');
       setValor(undefined);
-      setData(new Date());
-      setContaSelecionada(undefined);
-      setCategoriaSelecionada({
-        id: 0,
-        title: '',
-      });
-      setMessageError('');
+      setCategoriaSelecionada(undefined);
+
       Toast.show({
         type: 'success',
-        text1: 'Transação salva com sucesso!',
+        text1: 'Orçamento salvo com sucesso!',
       });
-      navigation.goBack();
+      navigation.goBack()
     } catch {
       setMessageError('Ocorreu um erro em criar a transação');
     } finally {
@@ -115,40 +83,9 @@ export const CreateBudget = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const user: UserState = {
-  //     id: 1,
-  //     name: 'Bruna Dafne',
-  //     email: 'brunadafne467@gmail.com',
-  //     password: '1234',
-  //     receita: 5000,
-  //     despesa: 0,
-  //     created_at: new Date(),
-  //   };
-  //   console.log('user: ', user);
-  //   //dispatch(setUser(user));
-  //   const contas = {
-  //     receita: 5000,
-  //     despesa: 0,
-  //   }
-  //   //dispatch(setValues(contas));
-
-  //   const novaCarteira: Wallet = {
-  //     id: wallets?.length > 0 ? wallets.length + 1 : 1,
-  //     id_user: id ? id : 1,
-  //     title: 'conta nubank',
-  //     value: 5000,
-  //     id_banking_institution: 2,
-  //     created_at: new Date(),
-  //   }
-  //   //dispatch(addWallet(novaCarteira))
-  // }, []);
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Adicionar orçamento
-      </Text>
+      <Text style={styles.title}>Adicionar orçamento</Text>
       <DropdownField
         label="Categoria"
         data={categories}
