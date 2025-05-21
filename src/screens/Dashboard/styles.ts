@@ -221,6 +221,8 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
     marginTop: 8,
+    width: '100%',
+    backgroundColor: 'yellow'
   },
 
   budgetCard: {
