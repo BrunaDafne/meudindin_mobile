@@ -6,19 +6,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import transactionsReducer from './slices/transactionsSlice'
 import userReducer from './slices/userSlice'
 import walletsReducer from './slices/walletSlice'
+import budgetReducer from './slices/budgetSlice'
 
 // Combina todos os reducers
 const rootReducer = combineReducers({
   transaction: transactionsReducer,
   user: userReducer,
   wallets: walletsReducer,
+  budgets: budgetReducer,
 })
 
 // Configuração da persistência
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['transaction', 'user', 'wallets'], // quais reducers você quer persistir
+  whitelist: ['transaction', 'user', 'wallets', 'budgets'], // quais reducers você quer persistir
 }
 
 // Cria um reducer com persistência
