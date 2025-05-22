@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   View,
   Text,
@@ -29,12 +29,20 @@ const Budget = () => {
   );
   const budgets = useSelector((state: RootState) => state.budgets.budgets);
 
-  // Dados fictícios para os gráficos
-  const pieData = [
-    {value: 50, color: '#25A969', text: 'Alimentação'},
-    {value: 30, color: '#E74C3C', text: 'Transporte'},
-    {value: 20, color: '#FBBF24', text: 'Lazer'},
-  ];
+  const pieData = useMemo(() => {
+    let total = 0;
+    let gasto = 0;
+
+    mostrarOrcamentos?.forEach(({limit, value}) => {
+      total = total + limit;
+      gasto = gasto + value;
+    });
+
+    return [
+      {value: gasto, color: '#25A969'},
+      {value: total, color: '#defbff'},
+    ];
+  }, [mostrarOrcamentos]);
 
   const barData = [
     {value: 200, label: 'Jan', frontColor: '#25A969'},
@@ -81,10 +89,10 @@ const Budget = () => {
         <Text style={styles.headerTitle}>Orçamento</Text>
       </View>
 
-      <TouchableOpacity onPress={() => setShowPicker(true)}>
-        <Text style={styles.subtitle}>{formatDate(selectedDate)}</Text>
+      <View style={styles.containerCalendar}>
+        <Text style={styles.titleMonth}>{formatDate(selectedDate)}</Text>
         <Icon name="calendar" size={24} color="#000" />
-      </TouchableOpacity>
+      </View>
 
       {showPicker && (
         <DateTimePicker
@@ -96,8 +104,23 @@ const Budget = () => {
       )}
 
       <View style={styles.chartContainer}>
-        <Text style={styles.sectionTitle}>Geral</Text>
-        <PieChart data={pieData} />
+        <View style={styles.chartContainerTitle}>
+          <Text style={styles.sectionTitle}>Geral</Text>
+          <View style={styles.flag}>
+            <Text style={styles.flagLabel}>Mês atual</Text>
+          </View>
+        </View>
+        <PieChart data={pieData} radius={100} />
+        <View style={styles.chartContainerLegenda}>
+          <View style={styles.containerLegenda}>
+            <Text style={styles.legendaTitle}>Total: </Text>
+            <Text>{pieData[1].value}</Text>
+          </View>
+          <View style={styles.containerLegenda}>
+            <Text style={styles.legendaTitle}>Gastos: </Text>
+            <Text>{pieData[0].value}</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.chartContainer}>
@@ -112,9 +135,6 @@ const Budget = () => {
           onPress={() => navigation.navigate('CreateBudget')}>
           <Text>t</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <Text>t</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -125,8 +145,8 @@ const Budget = () => {
           <View key={index} style={styles.budgetCard}>
             <PieChart
               data={[
-                {value: orcamento.value, color: '#25A969', text: 'Alimentação'},
-                {value: orcamento.limit, color: '#fff', text: 'Transporte'},
+                {value: orcamento.value, color: '#25A969'},
+                {value: orcamento.limit, color: '#fff'},
               ]}
               radius={55}
             />
