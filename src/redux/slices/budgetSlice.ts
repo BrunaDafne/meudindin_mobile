@@ -29,11 +29,18 @@ const budgetsSlice = createSlice({
         (budget) => budget.id !== action.payload
       );
     },
+    updateBudget: (state, action: PayloadAction<{id: number; newLimit: number}>) => {
+      const {id, newLimit} = action.payload;
+      const budget = state.budgets.find(b => b.id === id);
+      if (budget) {
+        budget.limit = newLimit;
+      }
+    },
     setBudgets: (state, action: PayloadAction<Budget[]>) => {
       state.budgets = action.payload;
     },
   },
 });
 
-export const { addBudget, removeBudget, setBudgets } = budgetsSlice.actions;
+export const { addBudget, removeBudget, updateBudget, setBudgets } = budgetsSlice.actions;
 export default budgetsSlice.reducer;

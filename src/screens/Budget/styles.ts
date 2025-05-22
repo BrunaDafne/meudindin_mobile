@@ -168,4 +168,61 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: '#374151',
   },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+  },
+  modalButtons: {
+    flexDirection: 'column',
+    gap: 10,
+  },
+  button: {
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonClose: {
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 25,
+    backgroundColor: '#ededed'
+  },
+  buttonCloseText: {
+    color: '#222222',
+    fontWeight: 'bold',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  labelEdit: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
 });

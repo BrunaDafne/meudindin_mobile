@@ -7,6 +7,9 @@ import {
   Platform,
   Image,
   ScrollView,
+  Modal,
+  Alert,
+  TextInput,
 } from 'react-native';
 import {PieChart, BarChart} from 'react-native-gifted-charts';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -16,8 +19,10 @@ import {styles} from './styles';
 import {OrcamentoCard} from '../Dashboard';
 import {TypeTransation} from '../../constants/transation';
 import {Categories} from '../../constants/categories';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
+import { removeBudget, updateBudget } from '../../redux/slices/budgetSlice';
+import Toast from 'react-native-toast-message';
 
 const Budget = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -27,6 +32,9 @@ const Budget = () => {
   const transactions = useSelector(
     (state: RootState) => state.transaction.transactions,
   );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [newMeta, setNewMeta] = useState('');
   const budgets = useSelector((state: RootState) => state.budgets.budgets);
 
   const pieData = useMemo(() => {
@@ -55,6 +63,7 @@ const Budget = () => {
     setShowPicker(Platform.OS === 'ios');
     setSelectedDate(currentDate);
   };
+  const dispatch = useDispatch();
 
   const formatDate = date => {
     return date.toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
@@ -142,7 +151,14 @@ const Budget = () => {
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
         {mostrarOrcamentos?.map((orcamento, index) => (
-          <View key={index} style={styles.budgetCard}>
+          <TouchableOpacity
+            key={index}
+            style={styles.budgetCard}
+            onPress={() => {
+              setSelectedBudget(orcamento);
+              setNewMeta(orcamento.limit.toString());
+              setModalVisible(true);
+            }}>
             <PieChart
               data={[
                 {value: orcamento.value, color: '#25A969'},
@@ -153,8 +169,86 @@ const Budget = () => {
             <Text style={styles.budgetTitle}>{orcamento.name_category}</Text>
             <Text style={styles.budgetMeta}>Meta: R$ {orcamento.limit}</Text>
             <Text style={styles.budgetSpent}>Gasto: R$ {orcamento.value}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
+
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Editar Orçamento</Text>
+
+              <Text style={styles.labelEdit}>
+                Meta atual: R$ {selectedBudget?.limit}
+              </Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Nova meta"
+                keyboardType="numeric"
+                value={newMeta}
+                onChangeText={setNewMeta}
+              />
+
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.button, {backgroundColor: '#25A969'}]}
+                  onPress={() => {
+                    if (!newMeta) return;
+                    if (!selectedBudget) return;
+                    dispatch(
+                      updateBudget({
+                        id: selectedBudget?.id,
+                        newLimit: parseFloat(newMeta),
+                      }),
+                    );
+                    setModalVisible(false);
+                  }}>
+                  <Text style={styles.buttonText}>Adicionar nova meta</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, {backgroundColor: '#E74C3C'}]}
+                  onPress={() => {
+                    Alert.alert(
+                      'Excluir orçamento',
+                      'Tem certeza que deseja excluir?',
+                      [
+                        {text: 'Cancelar', style: 'cancel'},
+                        {
+                          text: 'Excluir',
+                          style: 'destructive',
+                          onPress: () => {
+                            if (selectedBudget?.id) {
+                              dispatch(removeBudget(selectedBudget?.id));
+                              setModalVisible(false);
+                            } else {
+                              setModalVisible(false);
+                              Toast.show({
+                                type: 'error',
+                                text1: 'Ocorreu um erro em excluir um orçamento',
+                              });
+                            } 
+                          },
+                        },
+                      ],
+                    );
+                  }}>
+                  <Text style={styles.buttonText}>Excluir orçamento</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(false)}>
+                  <Text style={styles.buttonCloseText}>Fechar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </ScrollView>
   );
