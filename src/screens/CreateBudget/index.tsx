@@ -88,7 +88,7 @@ export const CreateBudget = () => {
       <Text style={styles.title}>Adicionar orçamento</Text>
       <DropdownField
         label="Categoria"
-        data={categories}
+        data={selectCategorias}
         value={categoriaSelecionada}
         onSelect={setCategoriaSelecionada}
       />
