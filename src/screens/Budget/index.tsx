@@ -23,6 +23,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import { removeBudget, updateBudget } from '../../redux/slices/budgetSlice';
 import Toast from 'react-native-toast-message';
+import { CalendarDots, Plus } from "phosphor-react-native";
 
 const Budget = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -100,7 +101,7 @@ const Budget = () => {
 
       <View style={styles.containerCalendar}>
         <Text style={styles.titleMonth}>{formatDate(selectedDate)}</Text>
-        <Icon name="calendar" size={24} color="#000" />
+        <CalendarDots size={32} color="#000" />
       </View>
 
       {showPicker && (
@@ -142,7 +143,7 @@ const Budget = () => {
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => navigation.navigate('CreateBudget')}>
-          <Text>t</Text>
+          <Plus size={32} color="#fff" />
         </TouchableOpacity>
       </View>
 
