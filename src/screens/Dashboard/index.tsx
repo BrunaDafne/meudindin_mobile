@@ -17,6 +17,7 @@ import {Categories} from '../../constants/categories';
 import {TypeTransation} from '../../constants/transation';
 import {Budget} from '../../redux/slices/budgetSlice';
 import {PieChart} from 'react-native-gifted-charts';
+import {Plus} from 'phosphor-react-native';
 
 type DrawerParamList = {
   Dashboard: undefined;
@@ -136,11 +137,10 @@ export default function Dashboard() {
       <View style={styles.balanceHeader}>
         <Text style={styles.sectionTitle}>Saldos</Text>
         <View style={styles.balanceActions}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Icon name="plus" size={16} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Icon name="eye" size={16} color="#fff" />
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => navigation.navigate('CreateBalance')}>
+            <Plus size={32} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>

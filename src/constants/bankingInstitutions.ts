@@ -1,47 +1,47 @@
 export const bankingInstitutions = [
     {
         id: 1,
-        name: 'Inter',
+        title: 'Inter',
         code: '077'
     },
     {
         id: 2,
-        name: 'Nubank',
+        title: 'Nubank',
         code: '260'
     },
     {
         id: 3,
-        name: 'C6 Bank',
+        title: 'C6 Bank',
         code: '336'
     },
     {
         id: 4,
-        name: 'Picpay',
+        title: 'Picpay',
         code: '380'
     },
     {
         id: 5,
-        name: 'Banco do Brasil',
+        title: 'Banco do Brasil',
         code: '001'
     },
     {
         id: 6,
-        name: 'Caixa',
+        title: 'Caixa',
         code: '104'
     },
     {
         id: 7,
-        name: 'Bradesco',
+        title: 'Bradesco',
         code: '237'
     },
     {
         id: 8,
-        name: 'Itaú',
+        title: 'Itaú',
         code: '341'
     },
     {
         id: 9,
-        name: 'Santander',
+        title: 'Santander',
         code: '003'
     },
 ]

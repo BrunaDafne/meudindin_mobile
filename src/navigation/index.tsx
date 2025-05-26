@@ -8,6 +8,7 @@ import Budget from '../screens/Budget';
 import {CreateTransaction} from '../screens/CreateTransaction';
 import TransactionScreen from '../screens/Transaction';
 import { CreateBudget } from '../screens/CreateBudget';
+import { CreateBalance } from '../screens/CreateBalance';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -45,6 +46,10 @@ export default function AppRoutes() {
           <Stack.Screen
             name="CreateBudget"
             component={CreateBudget}
+          />
+          <Stack.Screen
+            name="CreateBalance"
+            component={CreateBalance}
           />
         </>
       ) : (
