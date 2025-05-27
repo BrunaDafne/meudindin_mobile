@@ -80,10 +80,10 @@ export const styles = StyleSheet.create({
   },
   chartContainerLegenda: {
     flexDirection: 'row',
-    width: '95%',
+    width: '100%',
     height: 40,
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     backgroundColor: '#C9F0FF',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
   },
   containerLegenda: {
     flexDirection: 'row',
-    width: '25%',
+    width: '30%',
     justifyContent: 'space-between',
     alignItems: 'center',
   },

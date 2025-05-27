@@ -71,8 +71,6 @@ export default function Dashboard() {
         <Text style={styles.headerTitle}>Dashboard</Text>
       </View>
 
-      <Button title="Sair" onPress={logout} />
-
       <Text style={styles.welcomeText}>Bem vindo(a), Bruna Dafne</Text>
 
       <View style={styles.cardsContainer}>
@@ -101,7 +99,7 @@ export default function Dashboard() {
         </View>
       </View>
 
-      <View style={styles.sectionContainer}>
+      {/* <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Próximas despesas</Text>
           <Icon name="alert-circle" size={30} color="#FBBF24" />
@@ -125,7 +123,7 @@ export default function Dashboard() {
           color="#000"
           style={styles.dropdownIcon}
         />
-      </View>
+      </View> */}
 
       <View style={styles.graphCard}>
         <Text style={styles.graphText}>
@@ -179,6 +177,7 @@ export default function Dashboard() {
           </View>
         ))}
       </ScrollView>
+      <Button title="Sair" onPress={logout} />
     </ScrollView>
   );
 }

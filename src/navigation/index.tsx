@@ -7,8 +7,8 @@ import Dashboard from '../screens/Dashboard';
 import Budget from '../screens/Budget';
 import {CreateTransaction} from '../screens/CreateTransaction';
 import TransactionScreen from '../screens/Transaction';
-import { CreateBudget } from '../screens/CreateBudget';
-import { CreateBalance } from '../screens/CreateBalance';
+import {CreateBudget} from '../screens/CreateBudget';
+import {CreateBalance} from '../screens/CreateBalance';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -26,7 +26,7 @@ function AuthenticatedDrawer() {
       }}>
       <Drawer.Screen name="Dashboard" component={Dashboard} />
       <Drawer.Screen name="Orçamento" component={Budget} />
-      <Drawer.Screen name="Transações" component={TransactionScreen} />
+      <Drawer.Screen name="Transações" component={TransactionScreen} /> 
     </Drawer.Navigator>
   );
 }
@@ -43,14 +43,8 @@ export default function AppRoutes() {
             name="CreateTransaction"
             component={CreateTransaction}
           />
-          <Stack.Screen
-            name="CreateBudget"
-            component={CreateBudget}
-          />
-          <Stack.Screen
-            name="CreateBalance"
-            component={CreateBalance}
-          />
+          <Stack.Screen name="CreateBudget" component={CreateBudget} />
+          <Stack.Screen name="CreateBalance" component={CreateBalance} />
         </>
       ) : (
         <Stack.Screen name="Login" component={Login} />
