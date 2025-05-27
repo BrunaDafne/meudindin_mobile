@@ -21,9 +21,13 @@ import {TypeTransation} from '../../constants/transation';
 import {Categories} from '../../constants/categories';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
-import { removeBudget, updateBudget } from '../../redux/slices/budgetSlice';
+import {removeBudget, updateBudget} from '../../redux/slices/budgetSlice';
 import Toast from 'react-native-toast-message';
-import { CalendarDots, Plus } from "phosphor-react-native";
+import {CalendarDots, Plus} from 'phosphor-react-native';
+import {Transaction} from '../../redux/slices/transactionsSlice';
+import {isSameMonth} from 'date-fns';
+import {groupBy, map, orderBy} from 'lodash';
+import {colorsGraph} from '../../constants/colorsGraph';
 
 const Budget = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,6 +37,7 @@ const Budget = () => {
   const transactions = useSelector(
     (state: RootState) => state.transaction.transactions,
   );
+  const [categoriasGastas, setCategoriasGastas] = useState();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
   const [newMeta, setNewMeta] = useState('');
@@ -57,6 +62,8 @@ const Budget = () => {
     {value: 200, label: 'Jan', frontColor: '#25A969'},
     {value: 150, label: 'Fev', frontColor: '#E74C3C'},
     {value: 100, label: 'Mar', frontColor: '#FBBF24'},
+    {value: 100, label: 'Mar', frontColor: '#FBBF24'},
+    {value: 100, label: 'Mar', frontColor: '#FBBF24'},
   ];
 
   const onChange = (event, selected) => {
@@ -70,7 +77,54 @@ const Budget = () => {
     return date.toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
   };
 
+  // Função para obter as 3 categorias mais gastas do mês
+  function getTopCategories(
+    transactions: Transaction[],
+  ): {label: string; value: number, frontColor: string}[] {
+    // Pegar o início e fim do mês atual
+    const now = new Date();
+
+    // Filtrar transações que pertencem ao mês atual
+    const thisMonthTransactions = transactions.filter(
+      transaction =>
+        isSameMonth(transaction.date, now) &&
+        transaction.id_type === TypeTransation['Despesa'],
+    );
+
+    // Agrupar as transações pelo campo `id_category`
+    const groupedByCategory = groupBy(thisMonthTransactions, 'id_category');
+
+    // Somar os valores de cada categoria
+    const categoryTotals = map(
+      groupedByCategory,
+      (transactions, id_category) => {
+        const total = transactions.reduce(
+          (sum, transaction) => sum + transaction.value,
+          0,
+        );
+        return {
+          label: Categories[parseInt(id_category)], // Pegar o nome da categoria do enum
+          value: total,
+        };
+      },
+    ).slice(0, 5);
+
+    const categoriesWithColors = categoryTotals.map((category, index) => {
+      const label = String(index);
+      return {
+        ...category,
+        frontColor: colorsGraph[label] ? colorsGraph[label] : '#101dad',
+      };
+    });
+
+    // Ordenar as categorias por porcentagem e pegar as 3 primeiras
+    return orderBy(categoriesWithColors, ['value'], ['desc']);
+  }
+
   useEffect(() => {
+    const categories = getTopCategories(transactions);
+    setCategoriasGastas(categories);
+
     const categorySums = transactions.reduce((acc, transaction) => {
       if (transaction.id_type === TypeTransation.Despesa) {
         acc[transaction.id_category] =
@@ -134,8 +188,8 @@ const Budget = () => {
       </View>
 
       <View style={styles.chartContainer}>
-        <Text style={styles.sectionTitle}>Orçamentos mais excedidos</Text>
-        <BarChart data={barData} />
+        <Text style={styles.sectionTitle}>Categorias mais gastas</Text>
+        <BarChart data={categoriasGastas} />
       </View>
 
       <View style={styles.containerLine}>
@@ -230,9 +284,10 @@ const Budget = () => {
                               setModalVisible(false);
                               Toast.show({
                                 type: 'error',
-                                text1: 'Ocorreu um erro em excluir um orçamento',
+                                text1:
+                                  'Ocorreu um erro em excluir um orçamento',
                               });
-                            } 
+                            }
                           },
                         },
                       ],
