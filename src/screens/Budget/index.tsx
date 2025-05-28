@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Platform,
   Image,
@@ -11,9 +10,9 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
+import { Dimensions } from 'react-native';
 import {PieChart, BarChart} from 'react-native-gifted-charts';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import {styles} from './styles';
 import {OrcamentoCard} from '../Dashboard';
@@ -42,6 +41,7 @@ const Budget = () => {
   const [selectedBudget, setSelectedBudget] = useState(null);
   const [newMeta, setNewMeta] = useState('');
   const budgets = useSelector((state: RootState) => state.budgets.budgets);
+  const screenWidth = Dimensions.get('window').width;
 
   const pieData = useMemo(() => {
     let total = 0;
@@ -80,7 +80,7 @@ const Budget = () => {
   // Função para obter as 3 categorias mais gastas do mês
   function getTopCategories(
     transactions: Transaction[],
-  ): {label: string; value: number, frontColor: string}[] {
+  ): {label: string; value: number; frontColor: string}[] {
     // Pegar o início e fim do mês atual
     const now = new Date();
 
@@ -188,8 +188,18 @@ const Budget = () => {
       </View>
 
       <View style={styles.chartContainer}>
-        <Text style={styles.sectionTitle}>Categorias mais gastas</Text>
-        <BarChart data={categoriasGastas} />
+        <View style={styles.chartContainerTitle}>
+          <Text style={styles.sectionTitle}>Categorias mais gastas</Text>
+          <View style={styles.flag}>
+            <Text style={styles.flagLabel}>Mês atual</Text>
+          </View>
+        </View>
+        <BarChart
+          data={categoriasGastas}
+          height={300}
+          width={screenWidth - 100} 
+          barWidth={80}
+        />
       </View>
 
       <View style={styles.containerLine}>
