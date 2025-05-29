@@ -94,6 +94,7 @@ const TransactionScreen = () => {
       </View>
 
       <View style={styles.filterBox}>
+        <Text style={styles.subtitleTitle}>Mês</Text>
         <TouchableOpacity
           style={styles.monthSelector}
           onPress={() => setShowDatePicker(true)}>
@@ -111,7 +112,7 @@ const TransactionScreen = () => {
             }}
           />
         )}
-
+        <Text style={{...styles.subtitleTitle, marginBottom: 10}}>Descrição</Text>
         <TextInput
           placeholder="Pesquisar por título ou descrição"
           placeholderTextColor={'#bfbfbf'}

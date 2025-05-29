@@ -26,6 +26,12 @@ export const styles = StyleSheet.create({
     color: '#1F2937',
   },
 
+  subtitleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+
   filterBox: {
     backgroundColor: '#DDF2FF',
     borderRadius: 12,
