@@ -16,6 +16,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { months } from '../../constants/months';
 
 interface Props {
   transactions: Transaction[];
@@ -34,8 +35,8 @@ const TransactionScreen = () => {
   );
   const navigation = useNavigation();
 
-  const monthLabel = format(selectedDate, 'MMMM yyyy');
-  console.log('monthLabel: ', monthLabel)
+  const monthLabel = format(selectedDate, 'MM');
+  const yearLabel = format(selectedDate, 'yyyy');
 
   const filteredTransactions = useMemo(() => {
     return transactions?.filter(tx => {
@@ -96,7 +97,7 @@ const TransactionScreen = () => {
         <TouchableOpacity
           style={styles.monthSelector}
           onPress={() => setShowDatePicker(true)}>
-          <Text>{monthLabel}</Text>
+          <Text>{months[monthLabel] ? months[monthLabel] : ''} {yearLabel}</Text>
         </TouchableOpacity>
 
         {showDatePicker && (
@@ -113,6 +114,7 @@ const TransactionScreen = () => {
 
         <TextInput
           placeholder="Pesquisar por título ou descrição"
+          placeholderTextColor={'#bfbfbf'}
           style={styles.input}
           value={search}
           onChangeText={setSearch}
