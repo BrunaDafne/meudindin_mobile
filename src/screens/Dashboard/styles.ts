@@ -167,6 +167,61 @@ export const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  chartContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  chartContainerTitle: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  chartContainerLegenda: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 40,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#C9F0FF',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 15,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  legendaTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+
+  flag: {
+    width: '40%',
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2563EB',
+    borderRadius: 30,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  flagLabel: {
+    color: '#fff',
+    fontWeight: '500',
+  },
 
   graphText: {
     fontSize: 14,
@@ -179,6 +234,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+    marginTop: 20,
   },
 
   balanceActions: {

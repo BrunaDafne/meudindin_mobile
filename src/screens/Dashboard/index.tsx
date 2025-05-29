@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Button,
+  Dimensions,
 } from 'react-native';
 import {styles} from './styles';
 import Icon from 'react-native-vector-icons/Feather';
@@ -16,8 +17,12 @@ import {RootState} from '../../redux/store';
 import {Categories} from '../../constants/categories';
 import {TypeTransation} from '../../constants/transation';
 import {Budget} from '../../redux/slices/budgetSlice';
-import {PieChart} from 'react-native-gifted-charts';
+import {BarChart, PieChart} from 'react-native-gifted-charts';
 import {Plus} from 'phosphor-react-native';
+import {groupBy, map, orderBy} from 'lodash';
+import {colorsGraph} from '../../constants/colorsGraph';
+import {isSameMonth} from 'date-fns';
+import { Transaction } from '../../redux/slices/transactionsSlice';
 
 type DrawerParamList = {
   Dashboard: undefined;
@@ -31,6 +36,7 @@ export interface OrcamentoCard extends Budget {
 }
 
 export default function Dashboard() {
+  const [categoriasGastas, setCategoriasGastas] = useState();
   const {logout} = useAuth();
   const {receita, despesa} = useSelector((state: RootState) => state.user);
   const wallets = useSelector((state: RootState) => state.wallets.wallets);
@@ -38,9 +44,53 @@ export default function Dashboard() {
   const transactions = useSelector(
     (state: RootState) => state.transaction.transactions,
   );
-
+  const screenWidth = Dimensions.get('window').width;
   const navigation = useNavigation();
   const [mostrarOrcamentos, setMostrarOrcamentos] = useState<OrcamentoCard[]>();
+
+  // Função para obter as 3 categorias mais gastas do mês
+  function getTopCategories(
+    transactions: Transaction[],
+  ): {label: string; value: number; frontColor: string}[] {
+    // Pegar o início e fim do mês atual
+    const now = new Date();
+
+    // Filtrar transações que pertencem ao mês atual
+    const thisMonthTransactions = transactions.filter(
+      transaction =>
+        isSameMonth(transaction.date, now) &&
+        transaction.id_type === TypeTransation['Despesa'],
+    );
+
+    // Agrupar as transações pelo campo `id_category`
+    const groupedByCategory = groupBy(thisMonthTransactions, 'id_category');
+
+    // Somar os valores de cada categoria
+    const categoryTotals = map(
+      groupedByCategory,
+      (transactions, id_category) => {
+        const total = transactions.reduce(
+          (sum, transaction) => sum + transaction.value,
+          0,
+        );
+        return {
+          label: Categories[parseInt(id_category)], // Pegar o nome da categoria do enum
+          value: total,
+        };
+      },
+    ).slice(0, 5);
+
+    const categoriesWithColors = categoryTotals.map((category, index) => {
+      const label = String(index);
+      return {
+        ...category,
+        frontColor: colorsGraph[label] ? colorsGraph[label] : '#101dad',
+      };
+    });
+
+    // Ordenar as categorias por porcentagem e pegar as 3 primeiras
+    return orderBy(categoriesWithColors, ['value'], ['desc']);
+  }
 
   useEffect(() => {
     const categorySums = transactions.reduce((acc, transaction) => {
@@ -58,6 +108,11 @@ export default function Dashboard() {
     }));
     setMostrarOrcamentos(orcamentosFormatados);
   }, [budgets, transactions]);
+
+  useEffect(() => {
+    const categories = getTopCategories(transactions);
+    setCategoriasGastas(categories);
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -99,6 +154,21 @@ export default function Dashboard() {
         </View>
       </View>
 
+      <View style={styles.chartContainer}>
+        <View style={styles.chartContainerTitle}>
+          <Text style={styles.sectionTitle}>Categorias mais gastas</Text>
+          <View style={styles.flag}>
+            <Text style={styles.flagLabel}>Mês atual</Text>
+          </View>
+        </View>
+        <BarChart
+          data={categoriasGastas}
+          height={300}
+          width={screenWidth - 100} 
+          barWidth={80}
+        />
+      </View>
+
       {/* <View style={styles.sectionContainer}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Próximas despesas</Text>
@@ -124,13 +194,6 @@ export default function Dashboard() {
           style={styles.dropdownIcon}
         />
       </View> */}
-
-      <View style={styles.graphCard}>
-        <Text style={styles.graphText}>
-          GRÁFICO DE COLUNAS COM TOP 3 - 5 CATEGORIAS MAIS GASTAS COM
-          PORCENTAGEM
-        </Text>
-      </View>
 
       <View style={styles.balanceHeader}>
         <Text style={styles.sectionTitle}>Saldos</Text>

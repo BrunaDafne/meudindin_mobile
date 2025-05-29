@@ -58,14 +58,6 @@ const Budget = () => {
     ];
   }, [mostrarOrcamentos]);
 
-  const barData = [
-    {value: 200, label: 'Jan', frontColor: '#25A969'},
-    {value: 150, label: 'Fev', frontColor: '#E74C3C'},
-    {value: 100, label: 'Mar', frontColor: '#FBBF24'},
-    {value: 100, label: 'Mar', frontColor: '#FBBF24'},
-    {value: 100, label: 'Mar', frontColor: '#FBBF24'},
-  ];
-
   const onChange = (event, selected) => {
     const currentDate = selected || selectedDate;
     setShowPicker(Platform.OS === 'ios');
