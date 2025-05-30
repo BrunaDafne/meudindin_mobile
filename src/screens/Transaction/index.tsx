@@ -14,9 +14,10 @@ import SelectDropdown from 'react-native-select-dropdown';
 import {Transaction} from '../../redux/slices/transactionsSlice';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
-import { styles } from './styles';
-import { useNavigation } from '@react-navigation/native';
-import { months } from '../../constants/months';
+import {styles} from './styles';
+import {useNavigation} from '@react-navigation/native';
+import {months} from '../../constants/months';
+import {orderBy} from 'lodash';
 
 interface Props {
   transactions: Transaction[];
@@ -98,7 +99,9 @@ const TransactionScreen = () => {
         <TouchableOpacity
           style={styles.monthSelector}
           onPress={() => setShowDatePicker(true)}>
-          <Text>{months[monthLabel] ? months[monthLabel] : ''} {yearLabel}</Text>
+          <Text>
+            {months[monthLabel] ? months[monthLabel] : ''} {yearLabel}
+          </Text>
         </TouchableOpacity>
 
         {showDatePicker && (
@@ -112,7 +115,9 @@ const TransactionScreen = () => {
             }}
           />
         )}
-        <Text style={{...styles.subtitleTitle, marginBottom: 10}}>Descrição</Text>
+        <Text style={{...styles.subtitleTitle, marginBottom: 10}}>
+          Descrição
+        </Text>
         <TextInput
           placeholder="Pesquisar por título ou descrição"
           placeholderTextColor={'#bfbfbf'}
@@ -141,8 +146,8 @@ const TransactionScreen = () => {
       </View>
 
       <FlatList
-        data={filteredTransactions}
-        keyExtractor={item => item.id.toString()}
+        data={orderBy(filteredTransactions, 'date', 'desc')}
+        keyExtractor={item => item.created_date.toString()}
         renderItem={renderItem}
         contentContainerStyle={{paddingBottom: 100}}
       />
