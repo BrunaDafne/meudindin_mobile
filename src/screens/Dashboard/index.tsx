@@ -233,7 +233,15 @@ export default function Dashboard() {
             style={styles.budgetCard}>
             <PieChart
               data={[
-                {value: orcamento.value, color: '#25A969'},
+                {
+                  value: orcamento.value,
+                  color:
+                    orcamento.value >= orcamento.limit
+                      ? '#EF4444'
+                      : orcamento.value >= orcamento.limit / 2
+                      ? '#dbb300'
+                      : '#25A969',
+                },
                 {value: orcamento.limit - orcamento.value, color: '#fff'},
               ]}
               radius={55}

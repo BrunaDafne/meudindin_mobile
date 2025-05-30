@@ -10,7 +10,7 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 import {PieChart, BarChart} from 'react-native-gifted-charts';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useNavigation} from '@react-navigation/native';
@@ -189,7 +189,7 @@ const Budget = () => {
         <BarChart
           data={categoriasGastas}
           height={300}
-          width={screenWidth - 100} 
+          width={screenWidth - 100}
           barWidth={80}
         />
       </View>
@@ -207,7 +207,7 @@ const Budget = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        {mostrarOrcamentos?.map((orcamento) => (
+        {mostrarOrcamentos?.map(orcamento => (
           <TouchableOpacity
             key={`${orcamento.created_date}`}
             style={styles.budgetCard}
@@ -218,7 +218,15 @@ const Budget = () => {
             }}>
             <PieChart
               data={[
-                {value: orcamento.value, color: '#25A969'},
+                {
+                  value: orcamento.value,
+                  color:
+                    orcamento.value >= orcamento.limit
+                      ? '#EF4444'
+                      : orcamento.value >= orcamento.limit / 2
+                      ? '#dbb300'
+                      : '#25A969',
+                },
                 {value: orcamento.limit - orcamento.value, color: '#fff'},
               ]}
               radius={55}
