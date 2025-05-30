@@ -207,9 +207,9 @@ const Budget = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        {mostrarOrcamentos?.map((orcamento, index) => (
+        {mostrarOrcamentos?.map((orcamento) => (
           <TouchableOpacity
-            key={index}
+            key={`${orcamento.created_date}`}
             style={styles.budgetCard}
             onPress={() => {
               setSelectedBudget(orcamento);
@@ -219,7 +219,7 @@ const Budget = () => {
             <PieChart
               data={[
                 {value: orcamento.value, color: '#25A969'},
-                {value: orcamento.limit, color: '#fff'},
+                {value: orcamento.limit - orcamento.value, color: '#fff'},
               ]}
               radius={55}
             />

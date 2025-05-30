@@ -18,6 +18,7 @@ import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
 import {months} from '../../constants/months';
 import {orderBy} from 'lodash';
+import { Categories } from '../../constants/categories';
 
 interface Props {
   transactions: Transaction[];
@@ -67,7 +68,7 @@ const TransactionScreen = () => {
         <Text style={styles.title}>
           {format(new Date(item.date), 'dd/MM/yy')} - {item.title}
         </Text>
-        <Text style={styles.meta}>Categoria: {item.id_category}</Text>
+        <Text style={styles.meta}>Categoria: {Categories[item.id_category]}</Text>
         <Text style={styles.meta}>Valor: R$ {item.value.toFixed(2)}</Text>
       </View>
       <View
