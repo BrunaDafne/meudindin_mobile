@@ -218,19 +218,22 @@ export default function Dashboard() {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        {mostrarOrcamentos?.map((orcamento, index) => (
-          <View key={index} style={styles.budgetCard}>
+        {mostrarOrcamentos?.map((orcamento) => (
+          <TouchableOpacity
+            key={`${orcamento.created_date}`}
+            style={styles.budgetCard}
+            >
             <PieChart
               data={[
-                {value: orcamento.value, color: '#25A969', text: 'Alimentação'},
-                {value: orcamento.limit, color: '#fff', text: 'Transporte'},
+                {value: orcamento.value, color: '#25A969'},
+                {value: orcamento.limit - orcamento.value, color: '#fff'},
               ]}
               radius={55}
             />
             <Text style={styles.budgetTitle}>{orcamento.name_category}</Text>
             <Text style={styles.budgetMeta}>Meta: R$ {orcamento.limit}</Text>
             <Text style={styles.budgetSpent}>Gasto: R$ {orcamento.value}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
       <Button title="Sair" onPress={logout} />
