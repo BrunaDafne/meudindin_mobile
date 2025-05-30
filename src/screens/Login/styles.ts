@@ -89,4 +89,9 @@ export const styles = StyleSheet.create({
     color: '#2563EB',
     fontFamily: 'Inter-Medium',
   },
+  message: {
+    fontSize: 18,
+    color: colors.red,
+    fontWeight: '600'
+  },
 });

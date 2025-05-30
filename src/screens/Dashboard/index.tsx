@@ -9,7 +9,6 @@ import {
   Dimensions,
 } from 'react-native';
 import {styles} from './styles';
-import Icon from 'react-native-vector-icons/Feather';
 import {useAuth} from '../../contexts/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -23,12 +22,6 @@ import {groupBy, map, orderBy} from 'lodash';
 import {colorsGraph} from '../../constants/colorsGraph';
 import {isSameMonth} from 'date-fns';
 import { Transaction } from '../../redux/slices/transactionsSlice';
-
-type DrawerParamList = {
-  Dashboard: undefined;
-  Orçamento: undefined;
-  Contas: undefined;
-};
 
 export interface OrcamentoCard extends Budget {
   value: number;
