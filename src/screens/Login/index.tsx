@@ -27,7 +27,7 @@ export default function Login() {
       return;
     }
 
-    if (email !== "brunadafne467@gmail.com" && senha !== "1234") {
+    if (email !== 'brunadafne467@gmail.com' && senha !== '1234') {
       setMessageError('Credenciais inválidas');
       return;
     }
@@ -43,7 +43,11 @@ export default function Login() {
           style={{flex: 1, width: '100%'}}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView
-              contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}
+              contentContainerStyle={{
+                flexGrow: 1,
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
               keyboardShouldPersistTaps="handled">
               <View style={styles.containerFormLogin}>
                 <Text style={styles.title}>Meu dindin</Text>
@@ -56,7 +60,7 @@ export default function Login() {
                   placeholder="Digite seu email"
                   placeholderTextColor="#A0AEC0"
                   style={styles.input}
-                  onChangeText={(e) => setEmail(e)}
+                  onChangeText={e => setEmail(e)}
                 />
 
                 <Text style={styles.label}>Senha*</Text>
@@ -66,7 +70,7 @@ export default function Login() {
                     placeholderTextColor="#A0AEC0"
                     style={styles.inputPassword}
                     secureTextEntry={!showPassword}
-                    onChangeText={(e) => setSenha(e)}
+                    onChangeText={e => setSenha(e)}
                   />
                   <TouchableOpacity
                     onPress={() => setShowPassword(!showPassword)}>
@@ -82,7 +86,9 @@ export default function Login() {
                   <Text style={styles.message}>{messageError}</Text>
                 )}
 
-                <TouchableOpacity style={styles.button} onPress={() => entrar()}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => entrar()}>
                   <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
 

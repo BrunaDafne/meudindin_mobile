@@ -21,7 +21,7 @@ import {Plus} from 'phosphor-react-native';
 import {groupBy, map, orderBy} from 'lodash';
 import {colorsGraph} from '../../constants/colorsGraph';
 import {isSameMonth} from 'date-fns';
-import { Transaction } from '../../redux/slices/transactionsSlice';
+import {Transaction} from '../../redux/slices/transactionsSlice';
 
 export interface OrcamentoCard extends Budget {
   value: number;
@@ -146,6 +146,15 @@ export default function Dashboard() {
           </TouchableOpacity>
         </View>
       </View>
+      <View style={[styles.card, styles.geralCardColor]}>
+        <Text style={styles.cardTitle}>Resumo geral</Text>
+        <Text style={styles.cardValue}>
+          R${' '}
+          {typeof receita === 'number' && typeof despesa === 'number'
+            ? receita - despesa
+            : 'Não informado'}
+        </Text>
+      </View>
 
       <View style={styles.chartContainer}>
         <View style={styles.chartContainerTitle}>
@@ -157,7 +166,7 @@ export default function Dashboard() {
         <BarChart
           data={categoriasGastas}
           height={300}
-          width={screenWidth - 100} 
+          width={screenWidth - 100}
           barWidth={80}
         />
       </View>
@@ -218,11 +227,10 @@ export default function Dashboard() {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.balanceScroll}>
-        {mostrarOrcamentos?.map((orcamento) => (
+        {mostrarOrcamentos?.map(orcamento => (
           <TouchableOpacity
             key={`${orcamento.created_date}`}
-            style={styles.budgetCard}
-            >
+            style={styles.budgetCard}>
             <PieChart
               data={[
                 {value: orcamento.value, color: '#25A969'},

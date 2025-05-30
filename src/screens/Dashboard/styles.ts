@@ -59,6 +59,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#EF4444',
   },
 
+  geralCardColor: {
+    backgroundColor: '#2563EB',
+  },
+
   cardTitle: {
     color: '#fff',
     fontSize: 14,
