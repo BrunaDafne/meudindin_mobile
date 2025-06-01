@@ -87,7 +87,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     const categorySums = transactions.reduce((acc, transaction) => {
-      if (transaction.id_type === TypeTransation.Despesa) {
+      if (
+        isSameMonth(transaction.date, new Date()) &&
+        transaction.id_type === TypeTransation.Despesa
+      ) {
         acc[transaction.id_category] =
           (acc[transaction.id_category] || 0) + transaction.value;
       }
@@ -96,7 +99,7 @@ export default function Dashboard() {
 
     const orcamentosFormatados: OrcamentoCard[] = budgets.map(budget => ({
       ...budget,
-      value: categorySums[budget.id_category] || 0, // Adiciona 0 caso não tenha transações
+      value: categorySums[budget.id_category] || 0,
       name_category: Categories[budget.id_category],
     }));
     setMostrarOrcamentos(orcamentosFormatados);
